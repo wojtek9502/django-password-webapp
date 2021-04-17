@@ -4,7 +4,7 @@
     "pk": 1,
     "fields": {
         "password": "pbkdf2_sha256$260000$sPgK3IpX3isTGu19VhgNpe$ryQ1sZT8nVdNf1kBTtwY1mZlkZAYXJ0rnUiJ3ZZPJls=",
-        "last_login": "2021-04-15T21:43:06.317Z",
+        "last_login": "2021-04-15T21:43:06Z",
         "is_superuser": true,
         "username": "admin",
         "first_name": "Admin",
@@ -12,7 +12,25 @@
         "email": "admin@admin.pl",
         "is_staff": true,
         "is_active": true,
-        "date_joined": "2021-04-15T21:41:33.940Z",
+        "date_joined": "2021-04-15T21:41:33Z",
+        "groups": [],
+        "user_permissions": []
+    }
+},
+{
+    "model": "auth.user",
+    "pk": 2,
+    "fields": {
+        "password": "pbkdf2_sha256$260000$xXpITTZAz8BcgH5Tk8rhoS$QmJmPODELUHehAoR3E8DKHtM5F1VyGe3648wYS21wX8=",
+        "last_login": null,
+        "is_superuser": false,
+        "username": "test",
+        "first_name": "test",
+        "last_name": "test",
+        "email": "test@test.pl",
+        "is_staff": false,
+        "is_active": true,
+        "date_joined": "2021-04-17T13:10:11Z",
         "groups": [],
         "user_permissions": []
     }
