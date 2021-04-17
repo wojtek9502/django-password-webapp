@@ -1,0 +1,20 @@
+[
+{
+    "model": "auth.user",
+    "pk": 1,
+    "fields": {
+        "password": "pbkdf2_sha256$260000$sPgK3IpX3isTGu19VhgNpe$ryQ1sZT8nVdNf1kBTtwY1mZlkZAYXJ0rnUiJ3ZZPJls=",
+        "last_login": "2021-04-15T21:43:06.317Z",
+        "is_superuser": true,
+        "username": "admin",
+        "first_name": "Admin",
+        "last_name": "Admin",
+        "email": "admin@admin.pl",
+        "is_staff": true,
+        "is_active": true,
+        "date_joined": "2021-04-15T21:41:33.940Z",
+        "groups": [],
+        "user_permissions": []
+    }
+}
+]
