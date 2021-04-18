@@ -1,2 +1,4 @@
 #Python 3.8
 Django~=3.2
+pytest-django~=4.2.0
+pytest~=6.2.3
