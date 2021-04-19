@@ -1,10 +1,47 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <title>$Title$</title>
-</head>
-<body>
-$END$
-</body>
+<!doctype html>
+
+<html lang="pl">
+    <head>
+      <meta charset="utf-8">
+        <link href="/static/css/bootstrap/bootstrap.min.css" rel="stylesheet">
+        <link href="/static/css/main.css" rel="stylesheet">
+        <title>Password App</title>
+    </head>
+
+    <body>
+        <header class="site-header">
+          <nav class="navbar navbar-expand-md navbar-dark bg-steel fixed-top">
+            <div class="container">
+              <a class="navbar-brand mr-4" href="/">Password App</a>
+              <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarToggle" aria-controls="navbarToggle" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+              </button>
+              <div class="collapse navbar-collapse" id="navbarToggle">
+                <div class="navbar-nav mr-auto">
+                </div>
+                <div class="navbar-nav">
+                      <a class="nav-item nav-link" href="#">Logowanie</a>
+                      <a class="nav-item nav-link " href="#">Rejestracja</a>
+                </div>
+              </div>
+            </div>
+          </nav>
+        </header>
+
+
+         <div role="main" class="container">
+            <div class="row">
+                 <div class="col-md-12">
+                    {% block page_content %}{% endblock %}
+                </div>
+            </div>
+         </div>
+
+        <script src="/static/js/jquery-3.4.1.min.js"></script>
+        <script src="/static/js/popper.min.js"></script>
+        <script src="/static/js/bootstrap.min.js"></script>
+
+        {% block end_body_script_section %}{% endblock %}
+
+    </body>
 </html>
