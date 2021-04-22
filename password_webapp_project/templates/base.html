@@ -1,10 +1,11 @@
+{% load static %}
 <!doctype html>
 
 <html lang="pl">
     <head>
       <meta charset="utf-8">
-        <link href="/static/css/bootstrap/bootstrap.min.css" rel="stylesheet">
-        <link href="/static/css/main.css" rel="stylesheet">
+        <link href="{% static 'css/bootstrap/bootstrap.min.css' %}" rel="stylesheet">
+        <link href="{% static 'css/main.css' %}" rel="stylesheet">
         <title>Password App</title>
     </head>
 
@@ -37,11 +38,9 @@
             </div>
          </div>
 
-        <script src="/static/js/jquery-3.4.1.min.js"></script>
-        <script src="/static/js/popper.min.js"></script>
-        <script src="/static/js/bootstrap.min.js"></script>
-
-        {% block end_body_script_section %}{% endblock %}
+        <script src="{% static 'js/jquery-3.4.1.min.js' %}"></script>
+        <script src="{% static 'js/popper.min.js' %}"></script>
+        <script src="{% static 'js/bootstrap.min.js' %}"></script>
 
     </body>
 </html>

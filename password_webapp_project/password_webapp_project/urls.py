@@ -21,5 +21,8 @@ urlpatterns = [
     path("", IndexView.as_view()),
     path("password/", include('password_app.urls')),
     path('admin/', admin.site.urls),
-
 ]
+
+# Only in development. Delete it on production server
+from django.contrib.staticfiles.urls import staticfiles_urlpatterns
+urlpatterns += staticfiles_urlpatterns()
