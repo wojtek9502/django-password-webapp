@@ -23,7 +23,7 @@
                     <span class="menu-elem-text">Home</span>
                 </a>
 
-                <a href="#about">
+                <a href="{% url 'accounts_app:login' %}">
                     <i class="material-icons">power_settings_new</i>
                     <span class="menu-elem-text">Zaloguj się</span>
                 </a>
@@ -50,7 +50,7 @@
                     <i class="material-icons">settings</i>
                     <span class="menu-elem-text">Ustawienia</span>
                 </a>
-                <a href="#about">
+                <a href="{% url 'accounts_app:logout' %}">
                     <i class="material-icons">power_settings_new</i>
                     <span class="menu-elem-text">Wyloguj</span>
                 </a>

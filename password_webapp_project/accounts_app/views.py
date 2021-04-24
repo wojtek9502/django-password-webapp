@@ -1,3 +1,5 @@
-from django.shortcuts import render
+from django.views.generic import TemplateView
 
-# Create your views here.
+
+class AfterLogoutView(TemplateView):
+    template_name = "accounts_app/after_logout.html"

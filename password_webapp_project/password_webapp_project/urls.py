@@ -20,6 +20,8 @@ from .views import IndexView
 urlpatterns = [
     path("", IndexView.as_view(), name='index'),
     path("password/", include('password_app.urls')),
+    path('accounts/', include('accounts_app.urls', namespace='accounts_app')),
+    path('accounts/', include('django.contrib.auth.urls')),
     path('admin/', admin.site.urls),
 ]
 
