@@ -17,7 +17,7 @@ class PasswordListView(generic.ListView):
         curr_user_obj = self.request.user
         q_filter = Q(password_shared_users=curr_user_obj) | Q(password_owner=curr_user_obj)
         qs = Password.objects.filter(q_filter)
-        return qs
+        return qs.order_by('description')
 
 
 class PasswordDetailView(generic.DetailView):

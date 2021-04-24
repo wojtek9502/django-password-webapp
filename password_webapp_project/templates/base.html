@@ -1,46 +1,67 @@
 {% load static %}
-<!doctype html>
-
-<html lang="pl">
+<!DOCTYPE html>
+<html>
     <head>
-      <meta charset="utf-8">
-        <link href="{% static 'css/bootstrap/bootstrap.min.css' %}" rel="stylesheet">
-        <link href="{% static 'css/main.css' %}" rel="stylesheet">
-        <title>Password App</title>
-    </head>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <body>
-        <header class="site-header">
-          <nav class="navbar navbar-expand-md navbar-dark bg-steel fixed-top">
-            <div class="container">
-              <a class="navbar-brand mr-4" href="/">Password App</a>
-              <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarToggle" aria-controls="navbarToggle" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-              </button>
-              <div class="collapse navbar-collapse" id="navbarToggle">
-                <div class="navbar-nav mr-auto">
-                </div>
-                <div class="navbar-nav">
-                      <a class="nav-item nav-link" href="#">Logowanie</a>
-                      <a class="nav-item nav-link " href="#">Rejestracja</a>
-                </div>
-              </div>
-            </div>
-          </nav>
-        </header>
+        <link href="{% static 'css/main.css' %}"  rel="stylesheet" type="text/css" />
+        <link href="{% static 'css/icon.css' %}" rel="stylesheet">
+        <link href="{% static 'css/bootstrap.min.css' %}" rel="stylesheet">
 
-
-         <div role="main" class="container">
-            <div class="row">
-                 <div class="col-md-12">
-                    {% block page_content %}{% endblock %}
-                </div>
-            </div>
-         </div>
-
-        <script src="{% static 'js/jquery-3.4.1.min.js' %}"></script>
+        <script src="{% static 'js/jquery-3.5.1.slim.min.js' %}"></script>
         <script src="{% static 'js/popper.min.js' %}"></script>
         <script src="{% static 'js/bootstrap.min.js' %}"></script>
+
+    </head>
+    <body>
+
+
+        <div class="sidebar">
+            {% if not user.is_authenticated %}
+                <a href="{% url 'index' %}">
+                    <i class="material-icons">home</i>
+                    <span class="menu-elem-text">Home</span>
+                </a>
+
+                <a href="#about">
+                    <i class="material-icons">power_settings_new</i>
+                    <span class="menu-elem-text">Zaloguj się</span>
+                </a>
+
+            {% else %}
+                <a style="background-color: #f1f1f1;" class="menu-search">
+                    <form name="search-input" target="#here" method="post">
+                        {% csrf_token %}
+                        <input class="menu-search-input" type="text" placeholder="Szukaj..">
+                        <input type="submit" hidden/>
+                    </form>
+                </a>
+
+                <a href="{% url 'index' %}">
+                    <i class="material-icons">home</i>
+                    <span class="menu-elem-text">Home</span>
+                </a>
+
+                <a href="{% url 'password_app:list' %}">
+                    <i class="material-icons">vpn_key</i>
+                    <span class="menu-elem-text">Hasła</span>
+                </a>
+                <a href="#contact">
+                    <i class="material-icons">settings</i>
+                    <span class="menu-elem-text">Ustawienia</span>
+                </a>
+                <a href="#about">
+                    <i class="material-icons">power_settings_new</i>
+                    <span class="menu-elem-text">Wyloguj</span>
+                </a>
+            {% endif %}
+        </div>
+
+        <div class="content">
+            <div class="container-fluid">
+                {% block page_content %}{% endblock %}
+            </div>
+        </div>
 
     </body>
 </html>

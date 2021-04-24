@@ -1,86 +1,86 @@
 body {
-  background: #fafafa;
-  color: #333333;
-  margin-top: 5rem;
-  margin-bottom: 100px;
+  margin: 0;
+  font-family: "Lato", sans-serif;
 }
 
-h1, h2, h3, h4, h5, h6 {
-  color: #444444;
+.sidebar {
+  margin: 0;
+  padding: 0;
+  width: 240px;
+  background-color: #f1f1f1;
+  position: fixed;
+  height: 100%;
+  overflow: auto;
 }
 
-.bg-steel {
-  background-color: #5f788a;
-}
 
-.site-header .navbar-nav .nav-link {
-  color: #cbd5db;
-}
-
-.site-header .navbar-nav .nav-link:hover {
-  color: #ffffff;
-}
-
-.site-header .navbar-nav .nav-link.active {
-  font-weight: 500;
-}
-
-.content-section {
-  background: #ffffff;
-  padding: 10px 20px;
-  border: 1px solid #dddddd;
-  border-radius: 3px;
-  margin-bottom: 20px;
-}
-
-.article-title {
-  color: #444444;
-}
-
-a.article-title:hover {
-  color: #428bca;
+.sidebar a {
+  display: block;
+  color: black;
+  padding: 16px;
+  margin-top: 30px
   text-decoration: none;
 }
 
-.article-content {
-  white-space: pre-line;
+.sidebar a.active {
+  background-color: #4CAF50;
+  color: white;
 }
 
-.article-img {
-  height: 65px;
-  width: 65px;
-  margin-right: 16px;
+.sidebar a:hover:not(.active) {
+  background-color: #555;
+  color: white;
 }
 
-.article-metadata {
-  padding-bottom: 1px;
-  margin-bottom: 4px;
-  border-bottom: 1px solid #e3e3e3
+div.content {
+  margin-left: 240px;
+  padding: 1px 16px;
+  height: 800px;
 }
 
-.article-metadata a:hover {
-  color: #333;
+.container-fluid {
+  margin-top: 20px;
+}
+
+@media screen and (max-width: 700px) {
+  .sidebar {
+    width: 100%;
+    height: auto;
+    position: relative;
+  }
+  .sidebar a {float: left;}
+  .menu-search div {float: left;}
+  div.content {margin-left: 0;}
+  .menu-elem-text {display: none;}
+}
+
+.menu-search-input {
+  width: 200px;
+}
+
+.table-btns {
+    margin-bottom:20px;
+    margin-top:20px;
+
+}
+
+.password-table a:link {
+  color: black;
+  background-color: transparent;
   text-decoration: none;
 }
-
-.article-svg {
-  width: 25px;
-  height: 25px;
-  vertical-align: middle;
+.password-table a:visited {
+  color: black;
+  background-color: transparent;
+  text-decoration: none;
 }
-
-.account-img {
-  height: 125px;
-  width: 125px;
-  margin-right: 20px;
-  margin-bottom: 16px;
+.password-table a:hover {
+  color: black;
+  background-color: transparent;
+  text-decoration: none;
 }
-
-.account-heading {
-  font-size: 2.5rem;
-}
-
-.navbar-profile-pic{
-    width:40px;
-    height:40px;
+.password-table a:active {
+  color: black;
+  background-color: transparent;
+  text-decoration: none;
 }
