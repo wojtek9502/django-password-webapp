@@ -1,0 +1,86 @@
+body {
+  margin: 0;
+  font-family: "Lato", sans-serif;
+}
+
+.sidebar {
+  margin: 0;
+  padding: 0;
+  width: 240px;
+  background-color: #f1f1f1;
+  position: fixed;
+  height: 100%;
+  overflow: auto;
+}
+
+
+.sidebar a {
+  display: block;
+  color: black;
+  padding: 16px;
+  margin-top: 30px
+  text-decoration: none;
+}
+
+.sidebar a.active {
+  background-color: #4CAF50;
+  color: white;
+}
+
+.sidebar a:hover:not(.active) {
+  background-color: #555;
+  color: white;
+}
+
+div.content {
+  margin-left: 240px;
+  padding: 1px 16px;
+  height: 800px;
+}
+
+.container-fluid {
+  margin-top: 20px;
+}
+
+@media screen and (max-width: 700px) {
+  .sidebar {
+    width: 100%;
+    height: auto;
+    position: relative;
+  }
+  .sidebar a {float: left;}
+  .menu-search div {float: left;}
+  div.content {margin-left: 0;}
+  .menu-elem-text {display: none;}
+}
+
+.menu-search-input {
+  width: 200px;
+}
+
+.table-btns {
+    margin-bottom:20px;
+    margin-top:20px;
+
+}
+
+.password-table a:link {
+  color: black;
+  background-color: transparent;
+  text-decoration: none;
+}
+.password-table a:visited {
+  color: black;
+  background-color: transparent;
+  text-decoration: none;
+}
+.password-table a:hover {
+  color: black;
+  background-color: transparent;
+  text-decoration: none;
+}
+.password-table a:active {
+  color: black;
+  background-color: transparent;
+  text-decoration: none;
+}

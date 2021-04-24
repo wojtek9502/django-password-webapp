@@ -1,0 +1,67 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+        <link href="{% static 'css/main.css' %}"  rel="stylesheet" type="text/css" />
+        <link href="{% static 'css/icon.css' %}" rel="stylesheet">
+        <link href="{% static 'css/bootstrap.min.css' %}" rel="stylesheet">
+
+        <script src="{% static 'js/jquery-3.5.1.slim.min.js' %}"></script>
+        <script src="{% static 'js/popper.min.js' %}"></script>
+        <script src="{% static 'js/bootstrap.min.js' %}"></script>
+
+    </head>
+    <body>
+
+
+        <div class="sidebar">
+            {% if not user.is_authenticated %}
+                <a href="{% url 'index' %}">
+                    <i class="material-icons">home</i>
+                    <span class="menu-elem-text">Home</span>
+                </a>
+
+                <a href="#about">
+                    <i class="material-icons">power_settings_new</i>
+                    <span class="menu-elem-text">Zaloguj się</span>
+                </a>
+
+            {% else %}
+                <a style="background-color: #f1f1f1;" class="menu-search">
+                    <form name="search-input" target="#here" method="post">
+                        {% csrf_token %}
+                        <input class="menu-search-input" type="text" placeholder="Szukaj..">
+                        <input type="submit" hidden/>
+                    </form>
+                </a>
+
+                <a href="{% url 'index' %}">
+                    <i class="material-icons">home</i>
+                    <span class="menu-elem-text">Home</span>
+                </a>
+
+                <a href="{% url 'password_app:list' %}">
+                    <i class="material-icons">vpn_key</i>
+                    <span class="menu-elem-text">Hasła</span>
+                </a>
+                <a href="#contact">
+                    <i class="material-icons">settings</i>
+                    <span class="menu-elem-text">Ustawienia</span>
+                </a>
+                <a href="#about">
+                    <i class="material-icons">power_settings_new</i>
+                    <span class="menu-elem-text">Wyloguj</span>
+                </a>
+            {% endif %}
+        </div>
+
+        <div class="content">
+            <div class="container-fluid">
+                {% block page_content %}{% endblock %}
+            </div>
+        </div>
+
+    </body>
+</html>
