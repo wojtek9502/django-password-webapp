@@ -3,9 +3,8 @@ from .models import Password
 
 # Register your models here.
 
-
+@admin.register(Password)
 class PasswordAdmin(admin.ModelAdmin):
     pass
-admin.site.register(Password, PasswordAdmin)
 
 
