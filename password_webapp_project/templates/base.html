@@ -23,9 +23,14 @@
                     <span class="menu-elem-text">Home</span>
                 </a>
 
-                <a href="#about">
-                    <i class="material-icons">power_settings_new</i>
+                <a href="{% url 'accounts_app:login' %}">
+                    <i class="material-icons">account_box</i>
                     <span class="menu-elem-text">Zaloguj się</span>
+                </a>
+
+                <a href="{% url 'accounts_app:register' %}">
+                    <i class="material-icons">content_paste</i>
+                    <span class="menu-elem-text">Zarejestruj się</span>
                 </a>
 
             {% else %}
@@ -50,7 +55,7 @@
                     <i class="material-icons">settings</i>
                     <span class="menu-elem-text">Ustawienia</span>
                 </a>
-                <a href="#about">
+                <a href="{% url 'accounts_app:logout' %}">
                     <i class="material-icons">power_settings_new</i>
                     <span class="menu-elem-text">Wyloguj</span>
                 </a>
