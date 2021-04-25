@@ -24,8 +24,13 @@
                 </a>
 
                 <a href="{% url 'accounts_app:login' %}">
-                    <i class="material-icons">power_settings_new</i>
+                    <i class="material-icons">account_box</i>
                     <span class="menu-elem-text">Zaloguj się</span>
+                </a>
+
+                <a href="{% url 'accounts_app:register' %}">
+                    <i class="material-icons">content_paste</i>
+                    <span class="menu-elem-text">Zarejestruj się</span>
                 </a>
 
             {% else %}

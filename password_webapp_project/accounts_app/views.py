@@ -1,5 +1,14 @@
-from django.views.generic import TemplateView
+from django.urls import reverse_lazy
+from django.views import generic
+
+from .forms import UserCreateForm
 
 
-class AfterLogoutView(TemplateView):
+class AfterLogoutView(generic.TemplateView):
     template_name = "accounts_app/after_logout.html"
+
+
+class RegisterView(generic.CreateView):
+    form_class = UserCreateForm
+    success_url = reverse_lazy('accounts_app:login')
+    template_name = 'accounts_app/register.html'
