@@ -17,7 +17,7 @@ class PasswordListView(generic.ListView):
     def get_queryset(self):
         curr_user_obj = self.request.user
         q_filter = Q(password_shared_users=curr_user_obj) | Q(password_owner=curr_user_obj)
-        qs = Password.objects.filter(q_filter)
+        qs = Password.objects.filter(q_filter).distinct()
         return qs.order_by('description')
 
 
@@ -35,25 +35,33 @@ class PasswordCreateView(generic.CreateView):
     def get_context_data(self, **kwargs):
         context = super(PasswordCreateView, self).get_context_data(**kwargs)
         curr_user_pk = self.request.user.pk
-        context['form'].fields['password_shared_users'].queryset = User.objects.filter(~Q(pk=curr_user_pk))  # ~ means exclude
+        context['form'].fields['password_shared_users'].queryset = User.objects.filter(
+            ~Q(pk=curr_user_pk))  # ~ means exclude
         return context
 
     def form_valid(self, form):
+        shared_users_qs = form.cleaned_data['password_shared_users']
         self.object = form.save(commit=False)
         self.object.password_owner = self.request.user
         self.object.save()
-        return HttpResponseRedirect(self.get_success_url())
+
+        # Add shared users to password obj
+        self.object.password_shared_users.add(*shared_users_qs)
+        self.object.save()
+        return HttpResponseRedirect(reverse_lazy("password_app:list"))
 
 
 class PasswordUpdateView(generic.UpdateView):
     model = Password
     form_class = PasswordCreateForm
     template_name = "password_app/password_update.html"
+    success_url = reverse_lazy("password_app:list")
 
     def get_context_data(self, **kwargs):
         context = super(PasswordUpdateView, self).get_context_data(**kwargs)
         curr_user_pk = self.request.user.pk
-        context['form'].fields['password_shared_users'].queryset = User.objects.filter(~Q(pk=curr_user_pk))  # ~ means exclude
+        context['form'].fields['password_shared_users'].queryset = User.objects.filter(
+            ~Q(pk=curr_user_pk))  # ~ means exclude
         return context
 
 
