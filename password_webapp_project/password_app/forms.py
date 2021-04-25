@@ -10,5 +10,5 @@ from .models import Password
 class PasswordCreateForm(forms.ModelForm):
     class Meta:
         model = Password
-        fields = '__all__'
+        exclude = ['password_owner']
         success_url = reverse_lazy('password_app:list')

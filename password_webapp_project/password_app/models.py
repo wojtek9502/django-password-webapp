@@ -15,6 +15,7 @@ class Password(models.Model):
     def __str__(self):
         return f"{self.description}, user: {self.password_owner.username}"
 
+    # Create and update views will be go to this page after form submit
     def get_absolute_url(self):
-        return reverse('password_app:detail', args=[str(self.pk)])
+        return reverse('password_app:list', args=[str(self.pk)])
 

@@ -1,5 +1,6 @@
 from django.contrib.auth.models import User
 from django.db.models import Q
+from django.http import HttpResponseRedirect
 from django.urls import reverse_lazy
 from django.views import generic
 
@@ -36,6 +37,12 @@ class PasswordCreateView(generic.CreateView):
         curr_user_pk = self.request.user.pk
         context['form'].fields['password_shared_users'].queryset = User.objects.filter(~Q(pk=curr_user_pk))  # ~ means exclude
         return context
+
+    def form_valid(self, form):
+        self.object = form.save(commit=False)
+        self.object.password_owner = self.request.user
+        self.object.save()
+        return HttpResponseRedirect(self.get_success_url())
 
 
 class PasswordUpdateView(generic.UpdateView):

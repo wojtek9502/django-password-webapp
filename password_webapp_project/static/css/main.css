@@ -25,11 +25,13 @@ body {
 .sidebar a.active {
   background-color: #4CAF50;
   color: white;
+  text-decoration: none;
 }
 
 .sidebar a:hover:not(.active) {
   background-color: #555;
   color: white;
+  text-decoration: none;
 }
 
 div.content {
