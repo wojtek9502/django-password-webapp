@@ -1,6 +1,7 @@
 from django.contrib.auth.models import User
 from django.db.models import Q
 from django.http import HttpResponseRedirect
+from django.shortcuts import render
 from django.urls import reverse_lazy
 from django.views import generic
 
@@ -57,11 +58,23 @@ class PasswordUpdateView(generic.UpdateView):
     template_name = "password_app/password_update.html"
     success_url = reverse_lazy("password_app:list")
 
+    def get(self, request, *args, **kwargs):
+        request = super().get(request, *args, **kwargs)
+        self.object = self.get_object()
+        curr_user = self.request.user
+
+        if curr_user not in self.object.password_shared_users.all():
+            return HttpResponseRedirect(reverse_lazy("password_app:list"))
+
+        return request
+
     def get_context_data(self, **kwargs):
         context = super(PasswordUpdateView, self).get_context_data(**kwargs)
-        curr_user_pk = self.request.user.pk
+        curr_user = self.request.user
+
+        # Don't show password owner user in shared users field
         context['form'].fields['password_shared_users'].queryset = User.objects.filter(
-            ~Q(pk=curr_user_pk))  # ~ means exclude
+            ~Q(pk=curr_user.pk))  # ~ means exclude
         return context
 
 
@@ -70,3 +83,24 @@ class PasswordDeleteView(generic.DeleteView):
     template_name = "password_app/password_delete.html"
     context_object_name = "user_password"
     success_url = reverse_lazy('password_app:list')
+
+
+class RemoveUserFromSharedPasswordUsers(generic.View):
+    template_name = "password_app/password_remove_user_from_shared.html"
+
+    def get(self, request, pk):
+        current_user = self.request.user
+        password_obj = Password.objects.get(pk=pk)
+
+        if current_user not in password_obj.password_shared_users.all():
+            return HttpResponseRedirect(reverse_lazy("password_app:list"))
+        return render(request, self.template_name, {'password_obj': password_obj})
+
+    def post(self, pk):
+        current_user = self.request.user
+
+        password_obj = Password.objects.get(pk=pk)
+        if current_user in password_obj.password_shared_users.all():
+            password_obj.password_shared_users.remove(current_user)
+            password_obj.save()
+        return HttpResponseRedirect(reverse_lazy("password_app:list"))

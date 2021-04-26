@@ -9,4 +9,5 @@ urlpatterns = [
     path('add/', views.PasswordCreateView.as_view(), name='add'),
     path('update/<int:pk>/', views.PasswordUpdateView.as_view(), name='update'),
     path('delete/<int:pk>/', views.PasswordDeleteView.as_view(), name='delete'),
+    path('remove_from_shared/<int:pk>/', views.RemoveUserFromSharedPasswordUsers.as_view(), name='remove_from_shared'),
 ]
