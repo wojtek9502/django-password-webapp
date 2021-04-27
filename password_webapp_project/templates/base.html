@@ -34,6 +34,11 @@
                 </a>
 
             {% else %}
+
+                {% if user.first_name %}
+                    <p class="logged-as-text">Witaj {{ user.first_name }}</p>
+                {% endif %}
+
                 <a style="background-color: #f1f1f1;" class="menu-search">
                     <form name="search-input" target="#here" method="post">
                         {% csrf_token %}

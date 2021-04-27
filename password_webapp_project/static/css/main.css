@@ -71,18 +71,26 @@ div.content {
   background-color: transparent;
   text-decoration: none;
 }
+
 .password-table a:visited {
   color: black;
   background-color: transparent;
   text-decoration: none;
 }
+
 .password-table a:hover {
   color: black;
   background-color: transparent;
   text-decoration: none;
 }
+
 .password-table a:active {
   color: black;
   background-color: transparent;
   text-decoration: none;
+}
+
+.logged-as-text {
+    margin-top: 30px;
+    margin-left: 20px;
 }
