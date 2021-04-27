@@ -1,12 +1,16 @@
+import csv
+
+from django.contrib import auth
 from django.contrib.auth.models import User
 from django.db.models import Q
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect, HttpResponse
 from django.shortcuts import render
 from django.urls import reverse_lazy
 from django.views import generic
 
 from .forms import PasswordCreateForm
 from .models import Password
+from .utils.password_export_utils import parse_password_to_csv_file
 
 
 class PasswordListView(generic.ListView):
@@ -74,7 +78,8 @@ class PasswordUpdateView(generic.UpdateView):
         curr_user = self.request.user
 
         # Don't show password owner user in shared users field
-        context['form'].fields['password_shared_users'].queryset = User.objects.filter(~Q(pk=curr_user.pk))  # ~ means exclude
+        context['form'].fields['password_shared_users'].queryset = User.objects.filter(
+            ~Q(pk=curr_user.pk))  # ~ means exclude
 
         return context
 
@@ -105,3 +110,28 @@ class RemoveUserFromSharedPasswordUsers(generic.View):
             password_obj.password_shared_users.remove(current_user)
             password_obj.save()
         return HttpResponseRedirect(reverse_lazy("password_app:list"))
+
+
+class PasswordExportToCSV(generic.View):
+    template_name = "password_app/password_export_to_csv.html"
+
+    def get(self, request):
+        # Get user passwords
+        curr_user_obj = self.request.user
+        q_filter = Q(password_shared_users=curr_user_obj) | Q(password_owner=curr_user_obj)
+        passwords_qs = Password.objects.filter(q_filter).distinct()
+        fieldnames = ["description", "password", "expiration_date", "password_owner", "password_shared_users"]
+
+        # Create the HttpResponse object with the appropriate CSV header.
+        response = HttpResponse(content_type='text/csv')
+        response['Content-Disposition'] = f'attachment; filename="passwords_{curr_user_obj}.csv"'
+
+        # write to csv file
+        writer = csv.DictWriter(response, fieldnames=fieldnames, delimiter=";")
+        writer.writeheader()
+
+        for password in passwords_qs:
+            row_dict = parse_password_to_csv_file(password, fieldnames)
+            writer.writerow(row_dict)
+
+        return response
