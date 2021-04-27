@@ -63,8 +63,9 @@ class PasswordUpdateView(generic.UpdateView):
         self.object = self.get_object()
         curr_user = self.request.user
 
-        if curr_user not in self.object.password_shared_users.all():
-            return HttpResponseRedirect(reverse_lazy("password_app:list"))
+        if curr_user is not self.request.user:
+            if curr_user not in self.object.password_shared_users.all():
+                return HttpResponseRedirect(reverse_lazy("password_app:list"))
 
         return request
 
@@ -73,8 +74,8 @@ class PasswordUpdateView(generic.UpdateView):
         curr_user = self.request.user
 
         # Don't show password owner user in shared users field
-        context['form'].fields['password_shared_users'].queryset = User.objects.filter(
-            ~Q(pk=curr_user.pk))  # ~ means exclude
+        context['form'].fields['password_shared_users'].queryset = User.objects.filter(~Q(pk=curr_user.pk))  # ~ means exclude
+
         return context
 
 

@@ -3,3 +3,4 @@ Django~=3.2
 pytest-django~=4.2.0
 pytest~=6.2.3
 django-widget-tweaks~=1.4.8
+django[argon2]

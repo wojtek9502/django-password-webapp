@@ -6,7 +6,7 @@ from django.urls import reverse
 class Password(models.Model):
     description = models.CharField(verbose_name="Opis", max_length=500, default="")
     password = models.CharField(verbose_name="Hasło", max_length=1000, null=False, blank=False)
-    expiration_date = models.DateField(verbose_name="Data wygaśnięcia", null=True, blank=True)
+    expiration_date = models.DateField(verbose_name="Data wygaśnięcia (opcjonalnie)", null=True, blank=True)
     create_date = models.DateField(verbose_name="Data utworzenia", auto_now_add=True)
     modify_date = models.DateField(verbose_name="Data modyfikacji", auto_now=True)
     password_owner = models.ForeignKey(User, verbose_name="Właściciel", default=None, null=True, related_name="+", on_delete=models.CASCADE)
