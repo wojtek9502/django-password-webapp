@@ -5,6 +5,6 @@ from .models import Password
 
 @admin.register(Password)
 class PasswordAdmin(admin.ModelAdmin):
-    pass
+    exclude = ('password',) # Don't show password field from Password model
 
 
