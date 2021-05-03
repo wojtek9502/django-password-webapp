@@ -1,6 +1,6 @@
-import csv
+import csv, json
+from datetime import datetime
 
-from django.contrib import auth
 from django.contrib.auth.models import User
 from django.db.models import Q
 from django.http import HttpResponseRedirect, HttpResponse
@@ -140,26 +140,29 @@ class PasswordImportFromCsvFile(generic.FormView):
     template_name = "password_app/password_csv_import_upload.html"
 
     def post(self, request, *args, **kwargs):
-        if not len(request.FILES):
-            return HttpResponseRedirect(reverse_lazy("password_app:list"))
+        # if not len(request.FILES):
+        #     return HttpResponseRedirect(reverse_lazy("password_app:list"))
 
         form = PasswordCsvFileUploadForm(request.POST, request.FILES)
         if form.is_valid():
             fieldnames, upload_file_rows = self.parse_file_rows(request.FILES['csv_file'])
             validate_errors_list = self.validate_csv_rows(fieldnames, upload_file_rows)
 
+            upload_file_rows_json = json.dumps(upload_file_rows)
             if len(validate_errors_list):
                 return render(
                     request,
                     template_name="password_app/password_csv_import_validate_error.html",
-                    context={"validate_errors_list": validate_errors_list}
+                    context={"validate_errors_list": validate_errors_list,
+                             "upload_file_rows": upload_file_rows}
                 )
 
             return render(
-                          request,
-                          template_name="password_app/password_csv_import_validate_ok.html",
-                          context={"upload_file_rows": upload_file_rows}
-                         )
+                request,
+                template_name="password_app/password_csv_import_validate_ok.html",
+                context={"upload_file_rows": upload_file_rows,
+                         "upload_file_rows_json": upload_file_rows_json}
+            )
 
     def parse_file_rows(self, file, delimiter=";", encoding="utf-8"):
         rows_list = []
@@ -173,7 +176,7 @@ class PasswordImportFromCsvFile(generic.FormView):
             else:
                 csv_row = dict(zip(fieldnames, row))
                 rows_list.append(csv_row)
-        return fieldnames, rows_list
+        return fieldnames,  rows_list
 
     def validate_csv_rows(self, fieldnames, upload_file_rows: dict):
         errors_list = []
@@ -186,3 +189,31 @@ class PasswordImportFromCsvFile(generic.FormView):
             if len(file_row.keys()) != len(required_fieldnames):
                 errors_list.append(f"Błąd w wiersz pliku: {row_n}: Niewłaściwa liczba kolumn w wierszu")
         return errors_list
+
+
+class PasswordImportFromCsvFileLoadData(generic.TemplateView):
+
+    def post(self, requset):
+        csv_file_import_data_json = json.loads(requset.POST['csv_import_data_json'])
+
+        for password_data in csv_file_import_data_json:
+            obj, is_obj_created = Password.objects.get_or_create(
+                description=password_data.get("description"),
+                password=password_data.get("password"),
+                expiration_date=password_data.get("expiration_date"),
+                password_owner=User.objects.get(username=password_data.get("password_owner"))
+            )
+
+            if is_obj_created:
+                if password_data.get("password_shared_users") != "-":
+                    password_shared_users_list = password_data.get("password_shared_users").split(",")
+                    for user in password_shared_users_list:
+                        shared_user = User.objects.get(username=user)
+                        if shared_user:
+                            obj.password_shared_users.add(shared_user)
+                    obj.save()
+
+        return render(requset, "password_app/password_csv_import_load_success.html",
+                      context={
+                          "csv_file_import_data_json": csv_file_import_data_json
+                      })
