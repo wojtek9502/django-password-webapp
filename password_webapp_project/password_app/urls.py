@@ -11,4 +11,5 @@ urlpatterns = [
     path('delete/<int:pk>/', views.PasswordDeleteView.as_view(), name='delete'),
     path('remove_from_shared/<int:pk>/', views.RemoveUserFromSharedPasswordUsers.as_view(), name='remove_from_shared'),
     path('export_csv/', views.PasswordExportToCSV.as_view(), name='export_to_csv'),
+    path('import_csv/', views.PasswordImportFromCsvFile.as_view(), name='import_to_csv'),
 ]

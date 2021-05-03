@@ -8,7 +8,7 @@ from django.shortcuts import render
 from django.urls import reverse_lazy
 from django.views import generic
 
-from .forms import PasswordCreateForm
+from .forms import PasswordCreateForm, PasswordCsvFileUploadForm
 from .models import Password
 from .utils.password_export_utils import parse_password_to_csv_file
 
@@ -113,8 +113,6 @@ class RemoveUserFromSharedPasswordUsers(generic.View):
 
 
 class PasswordExportToCSV(generic.View):
-    template_name = "password_app/password_export_to_csv.html"
-
     def get(self, request):
         # Get user passwords
         curr_user_obj = self.request.user
@@ -135,3 +133,56 @@ class PasswordExportToCSV(generic.View):
             writer.writerow(row_dict)
 
         return response
+
+
+class PasswordImportFromCsvFile(generic.FormView):
+    form_class = PasswordCsvFileUploadForm
+    template_name = "password_app/password_csv_import_upload.html"
+
+    def post(self, request, *args, **kwargs):
+        if not len(request.FILES):
+            return HttpResponseRedirect(reverse_lazy("password_app:list"))
+
+        form = PasswordCsvFileUploadForm(request.POST, request.FILES)
+        if form.is_valid():
+            fieldnames, upload_file_rows = self.parse_file_rows(request.FILES['csv_file'])
+            validate_errors_list = self.validate_csv_rows(fieldnames, upload_file_rows)
+
+            if len(validate_errors_list):
+                return render(
+                    request,
+                    template_name="password_app/password_csv_import_validate_error.html",
+                    context={"validate_errors_list": validate_errors_list}
+                )
+
+            return render(
+                          request,
+                          template_name="password_app/password_csv_import_validate_ok.html",
+                          context={"upload_file_rows": upload_file_rows}
+                         )
+
+    def parse_file_rows(self, file, delimiter=";", encoding="utf-8"):
+        rows_list = []
+        fieldnames = []
+        for i, row in enumerate(file):
+            row = row.decode(encoding).replace("\r\n", "")  # rsplit remove endline chars
+            row = row.split(delimiter)
+            row = [col.strip() for col in row]
+            if i == 0:
+                fieldnames = row
+            else:
+                csv_row = dict(zip(fieldnames, row))
+                rows_list.append(csv_row)
+        return fieldnames, rows_list
+
+    def validate_csv_rows(self, fieldnames, upload_file_rows: dict):
+        errors_list = []
+        required_fieldnames = ["description", "password", "expiration_date", "password_owner", "password_shared_users"]
+
+        if required_fieldnames != fieldnames:
+            errors_list.append("Niewłaściwy nagłówek pliku CSV")
+
+        for row_n, file_row in enumerate(upload_file_rows, start=1):
+            if len(file_row.keys()) != len(required_fieldnames):
+                errors_list.append(f"Błąd w wiersz pliku: {row_n}: Niewłaściwa liczba kolumn w wierszu")
+        return errors_list
