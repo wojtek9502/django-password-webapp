@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'password_app',
     'accounts_app',
+    'password_import_export_app',
 
     'widget_tweaks',
 ]

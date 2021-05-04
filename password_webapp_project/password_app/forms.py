@@ -18,5 +18,3 @@ class PasswordCreateForm(forms.ModelForm):
         success_url = reverse_lazy('password_app:list')
 
 
-class PasswordCsvFileUploadForm(forms.Form):
-    csv_file = forms.FileField(label="", widget=forms.FileInput(attrs={'accept': ".csv"}))
