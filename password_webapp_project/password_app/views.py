@@ -1,3 +1,6 @@
+import csv, json
+from datetime import datetime
+
 from django.contrib.auth.models import User
 from django.db.models import Q
 from django.http import HttpResponseRedirect
@@ -74,7 +77,8 @@ class PasswordUpdateView(generic.UpdateView):
         curr_user = self.request.user
 
         # Don't show password owner user in shared users field
-        context['form'].fields['password_shared_users'].queryset = User.objects.filter(~Q(pk=curr_user.pk))  # ~ means exclude
+        context['form'].fields['password_shared_users'].queryset = User.objects.filter(
+            ~Q(pk=curr_user.pk))  # ~ means exclude
 
         return context
 
@@ -105,3 +109,5 @@ class RemoveUserFromSharedPasswordUsers(generic.View):
             password_obj.password_shared_users.remove(current_user)
             password_obj.save()
         return HttpResponseRedirect(reverse_lazy("password_app:list"))
+
+
