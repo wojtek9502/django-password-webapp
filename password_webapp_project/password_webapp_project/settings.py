@@ -14,6 +14,7 @@ from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 from django.urls import reverse_lazy
+from decouple import config
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -21,10 +22,10 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/3.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-rot#@dcj9so+ea2_ma1r7r343+h82b7=ez)kots97#ms&r=r7t'
+SECRET_KEY = config('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = config('DEBUG', default=False, cast=bool)
 
 ALLOWED_HOSTS = []
 
@@ -114,9 +115,9 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/3.2/topics/i18n/
 
-LANGUAGE_CODE = 'pl'
+LANGUAGE_CODE = config('LANGUAGE_CODE', default="en", cast=str)
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = config('TIME_ZONE', default="UTC", cast=str)
 
 USE_I18N = True
 
@@ -128,7 +129,7 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/3.2/howto/static-files/
 
 STATIC_URL = '/static/'
-# STATIC_ROOT = Path(BASE_DIR, "static")
+# STATIC_ROOT = Path(BASE_DIR, config('STATIC_ROOT', default="static", cast=str))
 
 # STATICFILES_DIRS is set only during development, on production server comment this,
 # and uncommend STATIC_ROOT
@@ -137,7 +138,7 @@ STATICFILES_DIRS = [
 ]
 
 MEDIA_URL = '/media/'
-MEDIA_ROOT = Path(BASE_DIR, "media")
+MEDIA_ROOT = Path(BASE_DIR, config('MEDIA_ROOT', default="media", cast=str))
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
