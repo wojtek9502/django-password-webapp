@@ -1,4 +1,5 @@
-csv_fieldnames_list = ["description", "password", "expiration_date", "password_shared_users"]
+csv_fieldnames_list = ["description", "password", "expiration_date", "password_owner", "password_shared_users"]
+csv_required_fields_list = ["description", "password", "password_owner"]
 
 
 def parse_password_to_csv_file(password_obj, csv_fieldnames):

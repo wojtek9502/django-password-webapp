@@ -1,15 +1,18 @@
 import csv
 import json
+from typing import List, Dict, Tuple
 
 from django.contrib.auth.models import User
 from django.db.models import Q
 from django.http import HttpResponse
 from django.shortcuts import render
 from django.views import generic
+from django.core.exceptions import ObjectDoesNotExist
 
 from password_app.models import Password
 from .forms import PasswordCsvFileUploadForm
-from .utils.password_export_utils import parse_password_to_csv_file, csv_fieldnames_list
+from .utils.password_export_import_utils import parse_password_to_csv_file, csv_fieldnames_list, \
+    csv_required_fields_list
 
 
 class PasswordExportToCSV(generic.View):
@@ -63,7 +66,7 @@ class PasswordImportFromCsvFile(generic.FormView):
                          "upload_file_rows_json": upload_file_rows_json}
             )
 
-    def parse_file_rows(self, file, delimiter=";", encoding="utf-8"):
+    def parse_file_rows(self, file, delimiter=";", encoding="utf-8") -> Tuple[List, List[Dict]]:
         rows_list = []
         fieldnames = []
         for i, row in enumerate(file):
@@ -85,7 +88,13 @@ class PasswordImportFromCsvFile(generic.FormView):
 
         for row_n, file_row in enumerate(upload_file_rows, start=1):
             if len(file_row.keys()) != len(fieldnames_from_file):
-                errors_list.append(f"Błąd w wiersz pliku: {row_n}: Niewłaściwa liczba kolumn w wierszu")
+                errors_list.append(f"Błąd w wierszu nr {row_n}: Niewłaściwa liczba kolumn w wierszu")
+
+            for required_csv_field in csv_required_fields_list:
+                if not len(file_row.get(required_csv_field)):
+                    errors_list.append(
+                        f"Błąd w wierszu nr {row_n}: Brak wartości dla kolumny \"{required_csv_field}\", w wierszu.")
+
         return errors_list
 
 
@@ -95,11 +104,17 @@ class PasswordImportFromCsvFileLoadData(generic.TemplateView):
         csv_file_import_data_json = json.loads(request.POST['csv_import_data_json'])
 
         for password_data_from_csv in csv_file_import_data_json:
+            password_owner_username_from_csv = password_data_from_csv.get("password_owner")
+            try:
+                password_owner_obj = User.objects.get(username=password_owner_username_from_csv)
+            except ObjectDoesNotExist:
+                continue
+
             password_obj, is_obj_created = Password.objects.get_or_create(
                 description=password_data_from_csv.get("description"),
                 password=password_data_from_csv.get("password"),
                 expiration_date=password_data_from_csv.get("expiration_date"),
-                password_owner=User.objects.get(pk=request.user.pk)
+                password_owner=password_owner_obj
             )
 
             # Add shared users from CSV to password object
@@ -120,8 +135,10 @@ class PasswordImportFromCsvFileLoadData(generic.TemplateView):
         if password_shared_users_from_csv != "-":
             password_shared_users_from_csv = password_shared_users_from_csv.split(",")
             for user in password_shared_users_from_csv:
-                shared_user = User.objects.get(username=user)
-                if shared_user:
-                    password_shared_users_list.append(shared_user)
+                try:
+                    shared_user = User.objects.get(username=user)
+                except ObjectDoesNotExist:
+                    continue
+                password_shared_users_list.append(shared_user)
 
         return password_shared_users_list if len(password_shared_users_list) > 0 else False
