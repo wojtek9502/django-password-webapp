@@ -118,8 +118,8 @@ celerybeat.pid
 *.sage.py
 
 # Environments
-# .env
-.env/
+.env
+password_webapp_project/.env/
 .venv/
 env/
 venv/
