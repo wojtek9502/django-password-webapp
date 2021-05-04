@@ -1,3 +1,6 @@
+csv_fieldnames_list = ["description", "password", "expiration_date", "password_shared_users"]
+
+
 def parse_password_to_csv_file(password_obj, csv_fieldnames):
     row_dict = {}
     for model_field_name in csv_fieldnames:
