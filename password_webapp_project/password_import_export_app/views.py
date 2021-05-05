@@ -2,6 +2,7 @@ import csv
 import json
 from typing import List, Dict, Tuple
 
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.models import User
 from django.db.models import Q
 from django.http import HttpResponse
@@ -15,7 +16,7 @@ from .utils.password_export_import_utils import parse_password_to_csv_file, csv_
     csv_required_fields_list
 
 
-class PasswordExportToCSV(generic.View):
+class PasswordExportToCSV(LoginRequiredMixin, generic.View):
     def get(self, request):
         # Get user passwords
         curr_user_obj = self.request.user
@@ -37,7 +38,7 @@ class PasswordExportToCSV(generic.View):
         return response
 
 
-class PasswordImportFromCsvFile(generic.FormView):
+class PasswordImportFromCsvFile(LoginRequiredMixin, generic.FormView):
     form_class = PasswordCsvFileUploadForm
     template_name = "password_import_export_app/password_csv_import_upload.html"
 
@@ -98,7 +99,7 @@ class PasswordImportFromCsvFile(generic.FormView):
         return errors_list
 
 
-class PasswordImportFromCsvFileLoadData(generic.TemplateView):
+class PasswordImportFromCsvFileLoadData(LoginRequiredMixin, generic.TemplateView):
 
     def post(self, request):
         csv_file_import_data_json = json.loads(request.POST['csv_import_data_json'])

@@ -1,6 +1,4 @@
-import csv, json
-from datetime import datetime
-
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.models import User
 from django.db.models import Q
 from django.http import HttpResponseRedirect
@@ -12,7 +10,7 @@ from .forms import PasswordCreateForm
 from .models import Password
 
 
-class PasswordListView(generic.ListView):
+class PasswordListView(LoginRequiredMixin, generic.ListView):
     model = Password
     context_object_name = 'user_passwords'
     template_name = 'password_app/password_list.html'
@@ -25,13 +23,13 @@ class PasswordListView(generic.ListView):
         return qs.order_by('description')
 
 
-class PasswordDetailView(generic.DetailView):
+class PasswordDetailView(LoginRequiredMixin, generic.DetailView):
     model = Password
     context_object_name = 'user_password'
     template_name = 'password_app/password_detail.html'
 
 
-class PasswordCreateView(generic.CreateView):
+class PasswordCreateView(LoginRequiredMixin, generic.CreateView):
     model = Password
     form_class = PasswordCreateForm
     template_name = 'password_app/password_create.html'
@@ -55,7 +53,7 @@ class PasswordCreateView(generic.CreateView):
         return HttpResponseRedirect(reverse_lazy("password_app:list"))
 
 
-class PasswordUpdateView(generic.UpdateView):
+class PasswordUpdateView(LoginRequiredMixin, generic.UpdateView):
     model = Password
     form_class = PasswordCreateForm
     template_name = "password_app/password_update.html"
@@ -83,14 +81,14 @@ class PasswordUpdateView(generic.UpdateView):
         return context
 
 
-class PasswordDeleteView(generic.DeleteView):
+class PasswordDeleteView(LoginRequiredMixin, generic.DeleteView):
     model = Password
     template_name = "password_app/password_delete.html"
     context_object_name = "user_password"
     success_url = reverse_lazy('password_app:list')
 
 
-class RemoveUserFromSharedPasswordUsers(generic.View):
+class RemoveUserFromSharedPasswordUsers(LoginRequiredMixin, generic.View):
     template_name = "password_app/password_remove_user_from_shared.html"
 
     def get(self, request, pk):
@@ -109,5 +107,3 @@ class RemoveUserFromSharedPasswordUsers(generic.View):
             password_obj.password_shared_users.remove(current_user)
             password_obj.save()
         return HttpResponseRedirect(reverse_lazy("password_app:list"))
-
-
