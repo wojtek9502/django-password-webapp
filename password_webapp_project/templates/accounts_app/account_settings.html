@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+{% load widget_tweaks %}
+
+{% block page_content %}
+
+<h3>Twoje konto</h3>
+
+<div style="margin-top:30px;">
+    <p>Twoje dane:</p>
+    <ul>
+        <li><b>Imię i nazwisko:</b> {{ user.get_full_name }}</li>
+        <li><b>Adres email:</b> {{ user.email }}</li>
+        <li><b>Ostatnio zalogowany:</b> {{ user.last_login }}</li>
+        <li><b>Data rejestracji:</b> {{ user.date_joined }}</li>
+    </ul>
+</div>
+
+<div class="btn-group" role="group">
+  <div class="btn-group mr-2" role="group">
+    <button type="button" class="btn btn-outline-secondary">Zmień hasło</button>
+  </div>
+
+  <div class="btn-group mr-2" role="group">
+    <button type="button" class="btn btn-outline-secondary">Zmień adres email</button>
+  </div>
+</div>
+
+{% endblock page_content %}
