@@ -1,6 +1,7 @@
 from django.contrib.auth.models import User
 from django.urls import reverse_lazy
 from django.views import generic
+from django.contrib.auth.mixins import LoginRequiredMixin
 
 from .forms import *
 
@@ -15,11 +16,11 @@ class RegisterView(generic.CreateView):
     template_name = 'accounts_app/register.html'
 
 
-class AccountSettingsView(generic.TemplateView):
+class AccountSettingsView(LoginRequiredMixin, generic.TemplateView):
     template_name = "accounts_app/account_settings.html"
 
 
-class AccountChangeEmailView(generic.FormView):
+class AccountChangeEmailView(LoginRequiredMixin, generic.FormView):
     template_name = "accounts_app/account_change_email.html"
     form_class = UserEmailChangeForm
     success_url = reverse_lazy("accounts_app:account_settings")
@@ -40,7 +41,7 @@ class AccountChangeEmailView(generic.FormView):
         return super(AccountChangeEmailView, self).form_valid(form)
 
 
-class AccountChangePasswordView(generic.FormView):
+class AccountChangePasswordView(LoginRequiredMixin, generic.FormView):
     template_name = "accounts_app/account_change_password.html"
     form_class = UserPasswordChangeForm
     success_url = reverse_lazy("accounts_app:account_settings")
