@@ -17,11 +17,15 @@
 
 <div class="btn-group" role="group">
   <div class="btn-group mr-2" role="group">
-    <button type="button" class="btn btn-outline-secondary">Zmień hasło</button>
+      <a href="{% url 'accounts_app:account_change_password' %}">
+        <button type="button" class="btn btn-outline-secondary">Zmień hasło</button>
+      </a>
   </div>
 
   <div class="btn-group mr-2" role="group">
-    <button type="button" class="btn btn-outline-secondary">Zmień adres email</button>
+      <a href="{% url 'accounts_app:account_change_email' %}">
+        <button type="button" class="btn btn-outline-secondary">Zmień adres email</button>
+      </a>
   </div>
 </div>
 
