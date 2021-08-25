@@ -2,23 +2,24 @@ from django.core.management.base import BaseCommand, CommandError
 from django.db.models import Q
 from django.core.mail import EmailMultiAlternatives, get_connection
 from django.template.loader import render_to_string
+import dataclasses
 from datetime import timedelta, date
 from typing import List, Tuple
 from typing import NamedTuple
 
 from password_app.models import Password
 
-
-class UserPasswordDictType(NamedTuple):
-    email: str
-    expired_password_objects_list: List[Password]
+@dataclasses.dataclass
+class UsersPasswordsDataClass:
+    user_email: str
+    user_expired_passwords_obj_list: List[Password]
 
 
 class Command(BaseCommand):
     help = 'Get passwords that will expired date is less than 1 week'
-    users_passwords_dict: UserPasswordDictType = dict()
 
     def handle(self, *args, **options):
+        users_passwords_objects_list: List[UsersPasswordsDataClass] = []
         next_week_date = date.today() + timedelta(days=7)
 
         # Get expired passwords for all users
@@ -28,13 +29,14 @@ class Command(BaseCommand):
         # Collect users emails from passwords
         users_emails = set([password.password_owner.email for password in expired_passwords_list])
 
-        # Create dict: <user_email>:<user_expired_passwords_list>
+        # Bind expired password list to user email by using UsersPasswordsDataClass
         for user_email in users_emails:
-            self.users_passwords_dict[user_email] = [password_obj for password_obj in expired_passwords_list if
-                                                     password_obj.password_owner.email == user_email]
+            user_expired_password_list: List[Password] = [password_obj for password_obj in expired_passwords_list if password_obj.password_owner.email == user_email]
+            user_passwords_obj = UsersPasswordsDataClass(user_email, user_expired_password_list)
+            users_passwords_objects_list.append(user_passwords_obj)
 
-        # get datatuple for mass mail sending
-        datatuple = self.prepare_mail_datatuple()
+        # Get datatuple for mass mail sending
+        datatuple = self.prepare_mail_datatuple(users_passwords_objects_list)
 
         # send emails
         self.send_mass_html_mail(datatuple)
@@ -53,7 +55,7 @@ class Command(BaseCommand):
         return message
 
     def generate_mail_html_message(self, passwords_expired_list: List[Password]) -> str:
-        # Important! template renderer search for template in project 'template' dir
+        # Important! template renderer search for template in project 'templates' dir
         template_path: str = 'accounts_app/password_reminder_mail_template.html'
 
         context = {'passwords_objects_list': passwords_expired_list}
@@ -62,13 +64,16 @@ class Command(BaseCommand):
 
     # https://docs.djangoproject.com/en/3.2/topics/email/#send-mass-mail
     # Prepare datatuple for mass mail sending, add extra message_html into tuple
-    def prepare_mail_datatuple(self) -> tuple:
+    def prepare_mail_datatuple(self,  users_passwords_objects_list: List[UsersPasswordsDataClass]) -> tuple:
 
         datatuple_elems_list = list()
-        for user_email, passwords_expired_list in self.users_passwords_dict.items():
+        for users_passwords_obj in users_passwords_objects_list:
+            user_expired_passwords_list = users_passwords_obj.user_expired_passwords_obj_list
+            user_email = users_passwords_obj.user_email
+
             subject: str = "Your passwords are expired"
-            message_text: str = self.generate_mail_text_message(passwords_expired_list)
-            message_html: str = self.generate_mail_html_message(passwords_expired_list)
+            message_text: str = self.generate_mail_text_message(user_expired_passwords_list)
+            message_html: str = self.generate_mail_html_message(users_passwords_obj.user_expired_passwords_obj_list)
             mail_from: str = "noreply@passwordmanager.com"
             mail_recipient: Tuple[str] = (user_email,)
 
