@@ -2,10 +2,10 @@ from django.core.management.base import BaseCommand, CommandError
 from django.db.models import Q
 from django.core.mail import EmailMultiAlternatives, get_connection
 from django.template.loader import render_to_string
+from django.conf import settings
 import dataclasses
 from datetime import timedelta, date
 from typing import List, Tuple
-from typing import NamedTuple
 
 from password_app.models import Password
 
@@ -41,7 +41,7 @@ class Command(BaseCommand):
         # send emails
         self.send_mass_html_mail(datatuple)
 
-        # self.stdout.write(self.style.SUCCESS('Successfully closed poll "%s"'))
+        self.stdout.write(self.style.SUCCESS('Successfully send mails'))
 
     def generate_mail_text_message(self, passwords_expired_list: List[Password]) -> str:
         message = "Hi.\nPasswords below will expire soon:\n"
@@ -71,10 +71,10 @@ class Command(BaseCommand):
             user_expired_passwords_list = users_passwords_obj.user_expired_passwords_obj_list
             user_email = users_passwords_obj.user_email
 
-            subject: str = "Your passwords are expired"
+            subject: str = "Your passwords will be expired"
             message_text: str = self.generate_mail_text_message(user_expired_passwords_list)
             message_html: str = self.generate_mail_html_message(users_passwords_obj.user_expired_passwords_obj_list)
-            mail_from: str = "noreply@passwordmanager.com"
+            mail_from: str = settings.DEFAULT_FROM_EMAIL
             mail_recipient: Tuple[str] = (user_email,)
 
             datatuple_elem = (subject, message_text, message_html, mail_from, mail_recipient)

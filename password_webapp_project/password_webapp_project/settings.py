@@ -152,11 +152,12 @@ LOGOUT_REDIRECT_URL = reverse_lazy("accounts_app:afterLogout")
 SESSION_EXPIRE_AT_BROWSER_CLOSE = config('SESSION_EXPIRE_AT_BROWSER_CLOSE', default=True, cast=bool)
 
 # Email backend. If Debug=True, sended mail content will be print in console
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = config('EMAIL_HOST', cast=str)
+EMAIL_PORT = config('EMAIL_PORT', cast=int)
+EMAIL_HOST_USER = config('EMAIL_HOST_USER', cast=str)
+EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD', cast=str)
+EMAIL_USE_TLS = config('EMAIL_USE_TLS', cast=bool)
+DEFAULT_FROM_EMAIL = config('DEFAULT_FROM_EMAIL', cast=str)
 if DEBUG:
     EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
-else:
-    EMAIL_HOST = config('EMAIL_HOST', cast=str)
-    EMAIL_PORT = config('EMAIL_PORT', cast=int)
-    EMAIL_HOST_USER = config('EMAIL_HOST_USER', cast=str)
-    EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD', cast=str)
-    EMAIL_USE_TLS = config('EMAIL_USE_TLS', cast=bool)
